@@ -50,4 +50,23 @@ class BinanceController extends Controller
         $data = json_decode($response->getBody()->getContents(), true);
         return $data;
     }
+    public function tokenlimit()
+    {
+        $time = Carbon::now()->timestamp.'000';
+        $secret = 'bTMX1aGstZ44J27r38MhsSE3dFESb6tUYYbvcSpkUbM5FfB3eE2BCWclbSHS3Hg0';
+        $signature = hash_hmac('sha256','baseToken=BNB&timestamp='.$time, $secret);
+        $client = new Client();
+        $response = $client->request('GET', 'https://api.binance.com/sapi/v1/giftcard/buyCode/token-limit', [
+            'query' => [
+                'baseToken' => 'BNB',
+                'timestamp' =>$time,
+                'signature'=>$signature,
+            ],
+            'headers' => [
+                'X-MBX-APIKEY' => 'ZM6HtzE7AxRTZOWKhNcJ3RQEhy0qypgWttr5ZEcXRxVYDgiGAlJlG0wc9qUBEJFr',
+                
+            ],]);
+        $data = json_decode($response->getBody()->getContents(), true);
+        return $data;
+    }
 }
