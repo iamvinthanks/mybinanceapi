@@ -11,23 +11,28 @@ class BinanceController extends Controller
 {
     public function verifcode()
     {
+        $result[]=null;
         $times = Carbon::now()->timestamp;
         $time = $times.'000';
         $secret = 'bTMX1aGstZ44J27r38MhsSE3dFESb6tUYYbvcSpkUbM5FfB3eE2BCWclbSHS3Hg0';
-        $signature = hash_hmac('sha256','referenceNo=0033001002103016&timestamp='.$time, $secret);
+        $signature = hash_hmac('sha256','referenceNo=0033001007430846&timestamp='.$time, $secret);
         $client = new Client();
         $response = $client->request('GET', 'https://api.binance.com/sapi/v1/giftcard/verify', [
             'query' => [
-                'referenceNo' => '0033001002103016',
+                'referenceNo' => '0033001007430846',
                 'timestamp' =>$time,
                 'signature'=>$signature,
             ],
             'headers' => [
                 'X-MBX-APIKEY' => 'ZM6HtzE7AxRTZOWKhNcJ3RQEhy0qypgWttr5ZEcXRxVYDgiGAlJlG0wc9qUBEJFr',
-
             ],]);
         $data = json_decode($response->getBody()->getContents(), true);
-        return $data;
+        $token = $data['data']['token'].'IDRT';
+        $price = $this->price($token);
+         // hitung total
+        $total = $data['data']['amount'] * $price['price'];
+        dd($total);
+        return response()->json($data);
     }
 
     public function redeemcode(Request $request)
@@ -47,8 +52,9 @@ class BinanceController extends Controller
                 'X-MBX-APIKEY' => 'ZM6HtzE7AxRTZOWKhNcJ3RQEhy0qypgWttr5ZEcXRxVYDgiGAlJlG0wc9qUBEJFr',
                 
             ],]);
-        $data = json_decode($response->getBody()->getContents(), true);
-        return $data;
+        $datacode = json_decode($response->getBody()->getContents(), true);
+        
+
     }
     public function tokenlimit()
     {
@@ -68,5 +74,16 @@ class BinanceController extends Controller
             ],]);
         $data = json_decode($response->getBody()->getContents(), true);
         return $data;
+    }
+    public function price($token)
+    {
+        $client = new Client();
+        $response = $client->request('GET', 'https://api.binance.com/api/v3/ticker/price', [
+            'query' => [
+                'symbol' => $token,
+            ],
+            ]);
+        $pricecoin = json_decode($response->getBody()->getContents(), true);
+        return $pricecoin;
     }
 }
