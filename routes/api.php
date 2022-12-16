@@ -20,3 +20,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::get('/verifcode', 'App\Http\Controllers\Api\BinanceController@verifcode');
 Route::post('/redeemcode', 'App\Http\Controllers\Api\BinanceController@redeemcode');
 Route::get('token-limit', 'App\Http\Controllers\Api\BinanceController@tokenlimit');
+
+Route::post('/validatebank', 'App\Http\Controllers\Api\PaymentController@validatebank');

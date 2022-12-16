@@ -9,30 +9,40 @@ use Carbon\Carbon;
 
 class BinanceController extends Controller
 {
-    public function verifcode()
+    public function __construct(){
+        $this->BS = ENV('BINANCE_SECRET');
+        $this->BK = ENV('BINANCE_KEY');
+    }
+    public function verifcode(Request $request)
     {
-        $result[]=null;
-        $times = Carbon::now()->timestamp;
-        $time = $times.'000';
-        $secret = 'bTMX1aGstZ44J27r38MhsSE3dFESb6tUYYbvcSpkUbM5FfB3eE2BCWclbSHS3Hg0';
-        $signature = hash_hmac('sha256','referenceNo=0033001007430846&timestamp='.$time, $secret);
+        $time = Carbon::now()->timestamp.'000';
+        $secret = $this->BS;
+        $signature = hash_hmac('sha256','referenceNo='.$request->referenceNo.'&timestamp='.$time, $secret);
         $client = new Client();
         $response = $client->request('GET', 'https://api.binance.com/sapi/v1/giftcard/verify', [
             'query' => [
-                'referenceNo' => '0033001007430846',
+                'referenceNo' => $request->referenceNo,
                 'timestamp' =>$time,
                 'signature'=>$signature,
             ],
             'headers' => [
-                'X-MBX-APIKEY' => 'ZM6HtzE7AxRTZOWKhNcJ3RQEhy0qypgWttr5ZEcXRxVYDgiGAlJlG0wc9qUBEJFr',
+                'X-MBX-APIKEY' => $this->BK,
             ],]);
-        $data = json_decode($response->getBody()->getContents(), true);
-        $token = $data['data']['token'].'IDRT';
-        $price = $this->price($token);
-         // hitung total
-        $total = $data['data']['amount'] * $price['price'];
-        dd($total);
-        return response()->json($data);
+        $data_code = json_decode($response->getBody()->getContents());
+        
+        $data = json_decode(json_encode($data_code));
+        if($data->data->valid == true)
+        {
+            $total = $this->price($data->data->token,$data->data->amount);
+            return response()->json($total);
+        }
+        if($data->data->valid == false)
+        {
+            return response()->json([
+                'status' => false,
+                'message' => 'Code atau No.Refrensi Tidak Valid !',
+            ]);
+        }
     }
 
     public function redeemcode(Request $request)
@@ -75,8 +85,10 @@ class BinanceController extends Controller
         $data = json_decode($response->getBody()->getContents(), true);
         return $data;
     }
-    public function price($token)
+    public function price($token,$amount)
     {
+        $codevalue = $amount;
+        $token = $token.'IDRT';
         $client = new Client();
         $response = $client->request('GET', 'https://api.binance.com/api/v3/ticker/price', [
             'query' => [
@@ -84,6 +96,23 @@ class BinanceController extends Controller
             ],
             ]);
         $pricecoin = json_decode($response->getBody()->getContents(), true);
-        return $pricecoin;
+        
+        $priceb = $pricecoin['price'] * 0.01 ;
+        $price = $pricecoin['price'] - $priceb ;
+        $codevalue = '1';
+        $codecoin = $token;
+        $total =$price * $codevalue;
+        $fee = 5000;
+        $withfee = $total - $fee;
+
+        return $data = [
+            'status' => true,
+            'codevalue' => $codevalue,
+            'codecoin' => $codecoin,
+            'Market_Price' => $price,
+            'Code Value' => $total,
+            'fee' => $fee,
+            'withfee' => $withfee,
+        ];
     }
 }
