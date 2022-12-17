@@ -22,3 +22,4 @@ Route::post('/redeemcode', 'App\Http\Controllers\Api\BinanceController@redeemcod
 Route::get('token-limit', 'App\Http\Controllers\Api\BinanceController@tokenlimit');
 
 Route::post('/validatebank', 'App\Http\Controllers\Api\PaymentController@validatebank');
+Route::get('/ipcheck','App\Http\Controllers\Api\BinanceController@ipcheck');

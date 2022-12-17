@@ -34,7 +34,11 @@ class BinanceController extends Controller
         if($data->data->valid == true)
         {
             $total = $this->price($data->data->token,$data->data->amount);
-            return response()->json($total);
+            return response()->json([
+                'status' => true,
+                'message' => 'Code atau No.Refrensi Valid !',
+                'data' => $total,
+            ]);
         }
         if($data->data->valid == false)
         {
@@ -88,19 +92,17 @@ class BinanceController extends Controller
     public function price($token,$amount)
     {
         $codevalue = $amount;
-        $token = $token.'IDRT';
+        $codecoin = $token.'IDRT';
         $client = new Client();
         $response = $client->request('GET', 'https://api.binance.com/api/v3/ticker/price', [
             'query' => [
-                'symbol' => $token,
+                'symbol' =>$codecoin,
             ],
             ]);
         $pricecoin = json_decode($response->getBody()->getContents(), true);
         
         $priceb = $pricecoin['price'] * 0.01 ;
         $price = $pricecoin['price'] - $priceb ;
-        $codevalue = '1';
-        $codecoin = $token;
         $total =$price * $codevalue;
         $fee = 5000;
         $withfee = $total - $fee;
@@ -108,11 +110,21 @@ class BinanceController extends Controller
         return $data = [
             'status' => true,
             'codevalue' => $codevalue,
-            'codecoin' => $codecoin,
-            'Market_Price' => $price,
-            'Code Value' => $total,
+            'codecoin' => $token,
+            'market_price' => $price,
+            'total_value' => $total,
             'fee' => $fee,
             'withfee' => $withfee,
         ];
+    }
+    public function ipcheck(){
+        $client = New Client();
+        $response = $client->request('GET', 'https://api64.ipify.org');
+        $data = json_decode($response->getBody()->getContents(), true);
+        return response()->json([
+            'status' => true,
+            'message' => $data,
+        ]);
+
     }
 }
