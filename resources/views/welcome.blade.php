@@ -137,7 +137,8 @@
                 </table>
                 <div role="separator" class="dropdown-divider"></div>
                 <p class="text-center">ID Transaksi</p>
-                <h5 class="modal-title w-100" id="tx-id"value="IST-09812918391">IST-09812918391<img src="{{ asset('copy.png') }}" class="copy" type="button" onclick()="copy"></h5>
+                <input class="modal-title w-100" id="txid" value="IST-09812918391" style="display:none"></input>
+                <h5>IST-09812918391<img src="{{ asset('copy.png') }}" class="copy" type="button" onclick="myFunction()"><h5>
                 <div role="separator" class="dropdown-divider"></div>
             </div>
             
@@ -152,19 +153,15 @@
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script>
-function copy() {
+function myFunction() {
   // Get the text field
-  var copyText = document.getElementById("tx-id");
+  var copyText = document.getElementById("txid");
 
   // Select the text field
   copyText.select();
   copyText.setSelectionRange(0, 99999); // For mobile devices
-
   // Copy the text inside the text field
   navigator.clipboard.writeText(copyText.value);
-  
-  // Alert the copied text
-  alert("Copied the text: " + copyText.value);
 }
 $(document).ready(function(){
     $("#popup").trigger("click");
@@ -330,7 +327,7 @@ $(document).ready(function(){
     }
 
     .modal-confirm.modal-dialog {
-        margin-top: 150px;
+        margin-top: 110px;
         margin-left:auto;
         margin-right:auto;
         margin-bottom:auto;
