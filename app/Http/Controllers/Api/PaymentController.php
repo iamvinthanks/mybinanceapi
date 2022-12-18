@@ -18,8 +18,28 @@ class PaymentController extends Controller
                 'content-type' => 'application/json'
             ],
             'body' => json_encode([
-                'bank_code' => '014',
-                'account_number' => '0960997026',
+                'bank_code' => $request->bank_code,
+                'account_number' => $request->account_number,
+            ]),
+        ]);
+        $data = json_decode($response->getBody()->getContents());
+        return response()->json($data);
+    }
+    public function sendmoney(Request $request)
+    {
+        $client = new Client();
+        $response = $client->request('POST','https://api-stg.oyindonesia.com/api/remit',[
+            'headers' => [
+                'x-oy-username' => 'alvinnasa',
+                'x-api-key' => '9bc75d6b-fe31-46d6-a9c3-dc4bd29f47cc',
+                'content-type' => 'application/json',
+                'accept'=>'application/json',
+            ],
+            'body'=> json_encode([
+                'recipient_bank' => $request->recipient_bank,
+                'recipient_account' => $request->recipient_account,
+                'amount' => $request->amount,
+                'partner_trx_id'=>'1234567890',
             ]),
         ]);
         $data = json_decode($response->getBody()->getContents());

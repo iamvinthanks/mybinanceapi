@@ -19,6 +19,7 @@ class BinanceController extends Controller
         $secret = $this->BS;
         $signature = hash_hmac('sha256','referenceNo='.$request->referenceNo.'&timestamp='.$time, $secret);
         $client = new Client();
+        try{
         $response = $client->request('GET', 'https://api.binance.com/sapi/v1/giftcard/verify', [
             'query' => [
                 'referenceNo' => $request->referenceNo,
@@ -29,6 +30,12 @@ class BinanceController extends Controller
                 'X-MBX-APIKEY' => $this->BK,
             ],]);
         $data_code = json_decode($response->getBody()->getContents());
+        }catch(\Exception $e){
+            return response()->json([
+                'status' => false,
+                'message' => 'Oopss! Ada yang salah,Tekan Tombol Reset dan Pastikan Semua Data Sudah Benar!<p>Jika Masih tidak bisa Silahkan hubungi ADMIN!</p>',
+            ]);
+        }
         
         $data = json_decode(json_encode($data_code));
         if($data->data->valid == true)
@@ -54,19 +61,20 @@ class BinanceController extends Controller
         $time = Carbon::now()->timestamp.'000';
         $secret = 'bTMX1aGstZ44J27r38MhsSE3dFESb6tUYYbvcSpkUbM5FfB3eE2BCWclbSHS3Hg0';
         $signature = hash_hmac('sha256','code='.$request->code.'&timestamp='.$time, $secret);
-
-        $client = new Client();
-        $response = $client->request('POST', 'https://api.binance.com/sapi/v1/giftcard/redeemCode', [
-            'query' => [
-                'code' => $request->code,
-                'timestamp' =>$time,
-                'signature'=>$signature,
-            ],
-            'headers' => [
-                'X-MBX-APIKEY' => 'ZM6HtzE7AxRTZOWKhNcJ3RQEhy0qypgWttr5ZEcXRxVYDgiGAlJlG0wc9qUBEJFr',
-                
-            ],]);
-        $datacode = json_decode($response->getBody()->getContents(), true);
+            $client = new Client();
+            $response = $client->request('POST', 'https://api.binance.com/sapi/v1/giftcard/redeemCode', [
+                'query' => [
+                    'code' => $request->code,
+                    'timestamp' =>$time,
+                    'signature'=>$signature,
+                ],
+                'headers' => [
+                    'X-MBX-APIKEY' => 'ZM6HtzE7AxRTZOWKhNcJ3RQEhy0qypgWttr5ZEcXRxVYDgiGAlJlG0wc9qUBEJFr',
+                    
+                ],]);
+            $datacode = json_decode($response->getBody()->getContents(), true);
+        
+        
         
 
     }
@@ -114,7 +122,7 @@ class BinanceController extends Controller
             'market_price' => $price,
             'total_value' => $total,
             'fee' => $fee,
-            'withfee' => $withfee,
+            'withfee' => number_format($withfee),
         ];
     }
     public function ipcheck(){
