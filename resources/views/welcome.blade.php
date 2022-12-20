@@ -76,7 +76,6 @@
                 <button type="button" class="subscribe btn btn-primary btn-block rounded-pill shadow-sm" id="btn_ref"> Check  </button>
 
             </div>
-            <div role="separator" class="dropdown-divider"></div>
 
             </div>
 
@@ -87,7 +86,9 @@
                 <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%;"></div>
             </div>
             <alert style="display : none">
+                
             </alert>
+            <button type="button" style="display:none" class="subscribe btn btn-primary btn-block rounded-pill shadow-sm" id="redeem"> Confirm</button>
     </form>
         
         </div>
@@ -114,10 +115,14 @@
             <div class="modal-body">
                 <p class="text-center">Pesanan Anda diterima dan sedang diproses oleh sistem</p>
                 <table>
-                    <tr>
-                        <td>Nama </td>
-                        <td>: Rick Zolenda</td>
-                    </tr>
+                <tr>
+                    <td>Nama </td>
+                    <td>: Rick Zolenda</td>
+                </tr>
+                <tr>
+                    <td>Jenis Rekening </td>
+                    <td>: BCA</td>
+                </tr>
                 <tr>
                     <td>Nomor Rekening </td>
                     <td>: 091721923123</td>
@@ -154,17 +159,12 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 <script>
 function myFunction() {
-  // Get the text field
   var copyText = document.getElementById("txid");
-
-  // Select the text field
   copyText.select();
   copyText.setSelectionRange(0, 99999); // For mobile devices
-  // Copy the text inside the text field
   navigator.clipboard.writeText(copyText.value);
 }
 $(document).ready(function(){
-    $("#popup").trigger("click");
 		$("#btn_ref").click(function(event){
             $('#loading').show();
             $("alert").show();
@@ -181,26 +181,41 @@ $(document).ready(function(){
                 },
                 success:function(data){
                     
-                    if(data.status == true){
+                    if(data.data.status == true){
                         $('#loading').hide();
                         $("alert").append('<div class="alert alert-success" role="alert">'
                         + data.message+
-                        '<p>----------------------------------------</p>'+
+                        '<p>--------------------------------</p>'+
                         '<p>Gift Card Value : ' +data.data.codevalue+ ' ' +data.data.codecoin+'</p>'+
                         '<p>Market Price : ' +data.data.market_price+ '</p>'+
                         '<p>Gift Card Value IDR : ' +data.data.total_value+ '</p>'+
                         '<p>Fee : ' +data.data.fee+ '</p>' + 
                         '<p>Value + Fee: ' +data.data.withfee+ '</p>' +
-                        '<p>------------------------------------------</p>'+
-                        '</div>'+
-                        '<button type="button" class="subscribe btn btn-primary btn-block rounded-pill shadow-sm" id="redeem"> Confirm  </button>');
+                        '<p>--------------------------------</p>'+
+                        '</div>'
+                        );
                         $("#btn_ref").attr("disabled", true);
+                        $("#redeem").show();
                     }
-                    if(data.status == false){
+                    if(data.data.status == false || data.code =='014'){
+                        console.log(data.status)
+                        setTimeout(function(){
+                        window.location.reload();
+                        }, 5000);
+                        timeLeft = 5;
                         $('#loading').hide();
                         $("alert").append('<div class="alert alert-danger" role="alert id="danger">'
                         + data.message+
-                        '</div>').fadeOut(10000);
+                        '<a>Reload in :</a><a id="seconds">5</a>'+
+                        '</div>').fadeOut(10000);                    
+                        function countdown() {
+                            timeLeft--;
+                            document.getElementById("seconds").innerHTML = String( timeLeft );
+                            if (timeLeft > 0) {
+                                setTimeout(countdown, 1000);
+                            }
+                        };
+                        setTimeout(countdown, 1000);
                     }
                 },
             });
