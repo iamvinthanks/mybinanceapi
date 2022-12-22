@@ -25,7 +25,7 @@ class PaymentController extends Controller
         $data = json_decode($response->getBody()->getContents());
         return response()->json($data);
     }
-    public function sendmoney(Request $request)
+    public function sendmoney($money)
     {
         $client = new Client();
         $response = $client->request('POST','https://api-stg.oyindonesia.com/api/remit',[

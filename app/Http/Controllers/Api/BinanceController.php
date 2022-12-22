@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
+use App\Services\GateValidate;
 
 class BinanceController extends Controller
 {
     public function __construct(){
         $this->BS = ENV('BINANCE_SECRET');
         $this->BK = ENV('BINANCE_KEY');
+        $this->GateValidate = new GateValidate();
     }
     public function verifcode(Request $request)
     {
@@ -59,7 +61,6 @@ class BinanceController extends Controller
 
     public function redeemcode(Request $request)
     {
-        
         $time = Carbon::now()->timestamp.'000';
         $secret = $this->BS;
         $signature = hash_hmac('sha256','code='.$request->code.'&timestamp='.$time, $secret);
@@ -74,6 +75,7 @@ class BinanceController extends Controller
                     'X-MBX-APIKEY' => $this->BK,
                 ],]);
             $datacode = json_decode($response->getBody()->getContents(), true);
+            $this->GateValidate->countandsend($request->code);
             return $datacode;
             
         
