@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use Carbon\Carbon;
 
 class PaymentController extends Controller
 {
@@ -27,6 +28,8 @@ class PaymentController extends Controller
     }
     public function sendmoney(Request $request)
     {
+        $txid = 'TX-'.Carbon::now()->format('YmdHis');
+        
         $client = new Client();
         $response = $client->request('POST','https://api-stg.oyindonesia.com/api/remit',[
             'headers' => [
@@ -39,7 +42,7 @@ class PaymentController extends Controller
                 'recipient_bank' => $request->recipient_bank,
                 'recipient_account' => $request->recipient_account,
                 'amount' => $request->amount,
-                'partner_trx_id'=>'1234567890',
+                'partner_trx_id'=>'1928120123',
             ]),
         ]);
         $data = json_decode($response->getBody()->getContents());

@@ -165,6 +165,7 @@ function myFunction() {
   navigator.clipboard.writeText(copyText.value);
 }
 $(document).ready(function(){
+    $("#popup").trigger("click");
 		$("#btn_ref").click(function(event){
             $('#loading').show();
             $("alert").show();
