@@ -26,7 +26,7 @@ class PaymentController extends Controller
         $data = json_decode($response->getBody()->getContents());
         return response()->json($data);
     }
-    public function sendmoney($money)
+    public function sendmoney(Request $request)
     {
         $txid = 'TX-'.Carbon::now()->format('YmdHis');
         
@@ -42,7 +42,7 @@ class PaymentController extends Controller
                 'recipient_bank' => $request->recipient_bank,
                 'recipient_account' => $request->recipient_account,
                 'amount' => $request->amount,
-                'partner_trx_id'=>'1928120123',
+                'partner_trx_id'=>$txid,
             ]),
         ]);
         $data = json_decode($response->getBody()->getContents());

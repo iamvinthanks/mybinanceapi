@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.3.1/css/bootstrap.min.css"/>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 </head>
-
 <body>
 <div class="container py-5">
 <div class="row">
@@ -99,7 +98,7 @@
 </div>
 </div>
 </div>
-<div class="text-center" style="display:none">
+<div class="text-center" >
     <!-- Button HTML (to Trigger Modal) -->
     <a href="#myModal" class="trigger-btn" data-toggle="modal" id="popup"></a>
 </div>

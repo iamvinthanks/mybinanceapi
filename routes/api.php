@@ -17,10 +17,22 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('/verifcode', 'App\Http\Controllers\Api\BinanceController@verifcode');
 Route::post('/redeemcode', 'App\Http\Controllers\Api\BinanceController@redeemcode');
 Route::get('token-limit', 'App\Http\Controllers\Api\BinanceController@tokenlimit');
 
 Route::post('/validatebank', 'App\Http\Controllers\Api\PaymentController@validatebank');
-Route::get('/ipcheck','App\Http\Controllers\Api\BinanceController@ipcheck');
 Route::post('/sendmoney', 'App\Http\Controllers\Api\PaymentController@sendmoney');
+
+
+Route::post('/register', [App\Http\Controllers\API\AuthController::class, 'register']);
+//API route for login user
+Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login']);
+
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    Route::get('/profile','App\Http\Controllers\Api\AuthController@profile');
+    Route::get('/verifcode', 'App\Http\Controllers\Api\BinanceController@verifcode');
+
+    Route::get('/ipcheck','App\Http\Controllers\Api\BinanceController@ipcheck');
+    // API route for logout user
+    Route::post('/logout', [App\Http\Controllers\API\AuthController::class, 'logout']);
+});
