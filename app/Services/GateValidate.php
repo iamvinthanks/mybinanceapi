@@ -55,18 +55,19 @@ class GateValidate {
             ]);
         $pricecoin = json_decode($response->getBody()->getContents(), true);
         
-        $priceb = $pricecoin['price'] * 0.01 ;
+        $priceb = $pricecoin['price'] * 0.01 ; /// antisipasi selisih harga
         $price = $pricecoin['price'] - $priceb ;
         $total =$price * $codevalue;
         $fee = 5000;
         $withfee = $total - $fee;
+
 
         return $data = [
             'status' => true,
             'codevalue' => $codevalue,
             'codecoin' => $token,
             'market_price' => $price,
-            'total_value' => $total,
+            'total_value' => number_format($total),
             'fee' => $fee,
             'withfee' => round($withfee),
         ];

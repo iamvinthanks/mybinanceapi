@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\IndexController;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +14,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('navbar');
+// Route::get('/', function () {
+//     return view('navbar');
+// });
+Route::get('/escrow', function () {
+    return view('escrow.navbar');
 });
+
+Route::get('/', [IndexController::class, 'index']);
+Route::get('/escrow', [IndexController::class, 'escrow']);
+Route::get('/escrow/transaction/{escrow_id}', [IndexController::class, 'escrowtransaction']);

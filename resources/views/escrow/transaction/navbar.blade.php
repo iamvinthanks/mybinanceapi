@@ -28,13 +28,13 @@
                 <div class="nav__menu" id="nav-menu">
                     <ul class="nav__list">
                         <li class="nav__item">
-                            <a href="" class="nav__link active-link">
+                            <a href="/" class="nav__link ">
                                 <i class='bx bx-home-alt nav__icon'></i>
                                 <span class="nav__name">Convert</span>
                             </a>
                         </li>
                         <li class="nav__item">
-                            <a href="escrow" class="nav__link">
+                            <a href="/escrow" class="nav__link active-link">
                                 <i class='bx bx-briefcase-alt nav__icon'></i>
                                 <span class="nav__name">Escrow</span>
                             </a>
@@ -60,7 +60,7 @@
         <main>
             <!--=============== HOME ===============-->
             <section class="container section section__height" id="home">
-                @include('convert')
+                @include('escrow.transaction.transaction')
             </section>
            
         </main>

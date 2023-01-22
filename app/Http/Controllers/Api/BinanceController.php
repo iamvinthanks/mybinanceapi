@@ -33,30 +33,41 @@ class BinanceController extends Controller
                 'X-MBX-APIKEY' => ENV('BINANCE_KEY'),
             ],]);
         $data_code = json_decode($response->getBody()->getContents());
+        $data = json_decode(json_encode($data_code));
+        $total = $this->GateValidate->price($data->data->token,$data->data->amount);
+        if($total['total_value'] < 20000 )
+        {
+            return response()->json([
+                'status' => false,
+                'code'=>201,
+                'message' => 'Minimal Redeem Rp. 20.000,-',
+            ],201);
+        }
+        if($data->code == '000000')
+        {
+            if($data->data->valid == true){
+                return response()->json([
+                    'status' => true,
+                    'code'=>200,
+                    'message' => 'Code atau No.Refrensi Valid !',
+                    'data' => $total,
+                ],200);
+            }else{
+                return response()->json([
+                            'status' => false,
+                            'code'=>201,
+                            'message' => 'Code atau No.Refrensi Tidak Valid ! ',
+                            'notes'=>'Silahkan Cek Kembali No.Refrensi atau Code yang anda masukan',
+                        ],201);
+            }
+        }
         }catch(\Exception $e){
             return response()->json([
-                'code'=>'014',
+                'code'=>501,
                 'status' => false,
-                'message' => 'Oopss! Ada yang salah,Tekan Tombol Reset dan Pastikan Semua Data Sudah Benar!<p>Jika Masih tidak bisa Silahkan hubungi ADMIN!</p>',
-            ]);
-        }
-        
-        $data = json_decode(json_encode($data_code));
-        if($data->data->valid == true)
-        {
-            $total = $this->GateValidate->price($data->data->token,$data->data->amount);
-            return response()->json([
-                'status' => true,
-                'message' => 'Code atau No.Refrensi Valid !',
-                'data' => $total,
-            ]);
-        }
-        if($data->data->valid == false)
-        {
-            return response()->json([
-                'status' => false,
-                'message' => 'Code atau No.Refrensi Tidak Valid ! ',
-            ]);
+                'message' => 'Request Timeout!',
+                'notes'=>'Silahkan Refresh Browser',
+            ],501);
         }
     }
 

@@ -1,22 +1,6 @@
 // /*=============== SCROLL SECTIONS ACTIVE LINK ===============*/
 const sections = document.querySelectorAll('section[id]')
 
-function scrollActive(){
-    const scrollY = window.pageYOffset
-
-    sections.forEach(current =>{
-        const sectionHeight = current.offsetHeight,
-            sectionTop = current.offsetTop - 50,
-            sectionId = current.getAttribute('id')
-
-        if(scrollY > sectionTop && scrollY <= sectionTop + sectionHeight){
-            document.querySelector('.nav__menu a[href*=' + sectionId + ']').classList.add('active-link')
-        }else{
-            document.querySelector('.nav__menu a[href*=' + sectionId + ']').classList.remove('active-link')
-        }
-    })
-}
-window.addEventListener('scroll', scrollActive)
 
 
 // /*=============== CHANGE BACKGROUND HEADER ===============*/
@@ -116,27 +100,27 @@ $(document).ready(function(){
         });
         $('#redeem').click(function(event){
             console.log('ok')
-            // var referenceNo = $("#referenceNo").val();
-            // var giftcode = $("#giftcode").val();
-            // var account_number = $("#account_number").val();
-            // var recipient_bank = $("#recipient_bank").val();
-            // $.ajax({
-            //     type:"POST",
-            //     url:"api/redeemcode",
-            //     data:{
-            //         referenceNo:referenceNo,
-            //         giftcode:giftcode,
-            //         recipient_account:recipient_account,
-            //         recipient_bank:recipient_bank
-            //     },
-            //     success:function(data){
-                    
-            //     }
-            // })
+            var referenceNo = $("#referenceNo").val();
+            var giftcode = $("#giftcode").val();
+            var account_number = $("#account_number").val();
+            var recipient_bank = $("#recipient_bank").val();
+            $.ajax({
+                type:"POST",
+                url:"api/redeemcode",
+                data:{
+                    referenceNo:referenceNo,
+                    giftcode:giftcode,
+                    recipient_account:recipient_account,
+                    recipient_bank:recipient_bank
+                },
+                success:function(data){
+                    console.log(data)
+                }
+            })
         })
         $.ajax({
             type:"GET",
-            url:"api/profile",
+            url:"/api/profile",
             beforeSend: function (xhr) {
                 xhr.setRequestHeader('Authorization', 'Bearer '+ gentong );
             },
@@ -145,13 +129,45 @@ $(document).ready(function(){
                 $("#profilename").text(data.name);
             }
         })
-    });
+        $("#createescrow").click(function(event){
+            event.preventDefault();
+            data = [];
+            var gentong = localStorage.getItem('askum');
+            var buyer = $("#buyer").val();
+            var seller = $("#seller").val();
+            var amount = $("#amount").val();
+            var id_rek_buyer = $("#id_rek_buyer").val();
+            var id_rek_seller = $("#id_rek_seller").val();
+            var rek_seller = $("#rek_seller").val();
+            var rek_buyer = $("#rek_buyer").val();
+            data.push(buyer,seller,amount,id_rek_buyer,id_rek_seller,rek_seller,rek_buyer);
+            
+            $.ajax({
+                type:"POST",
+                url:"/api/createescrow",
+                data:{
+                    buyer:buyer,
+                    seller:seller,
+                    amount:amount,
+                    id_rek_buyer:id_rek_buyer,
+                    id_rek_seller:id_rek_seller,
+                    rek_seller:rek_seller,
+                    rek_buyer:rek_buyer
+                },
+                beforeSend: function (xhr) {
+                    xhr.setRequestHeader('Authorization', 'Bearer '+ gentong );
+                },
+                success:function(data){
+                    window.location.replace("/escrow/transaction/"+data.data);
+                },
+            });
+        });
+});
+
+
     function myFunction() {
         var copyText = document.getElementById("txid");
         copyText.select();
         copyText.setSelectionRange(0, 99999); // For mobile devices
         navigator.clipboard.writeText(copyText.value);
     }
-$(document).ready(function(){
-    
-});
