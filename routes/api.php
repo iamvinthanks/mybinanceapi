@@ -42,4 +42,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/approveescrow/{escrow_id}/seller', 'App\Http\Controllers\Api\EscrowController@approveescrowseller');
     Route::post('/approveescrow/{escrow_id}/buyer', 'App\Http\Controllers\Api\EscrowController@approveescrowbuyer');
     Route::post('/paymentprocess','App\Http\Controllers\Api\PaymentController@createpayment');
+    Route::get('/reklist', 'App\Http\Controllers\Api\MemberController@NorekUser');
 });
