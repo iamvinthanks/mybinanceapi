@@ -19,11 +19,12 @@ class BinanceController extends Controller
     {
 
         $time = Carbon::now()->timestamp.'000';
+        
         $secret = ENV('BINANCE_SECRET');
         $signature = hash_hmac('sha256','referenceNo='.$request->referenceNo.'&timestamp='.$time, $secret);
         $client = new Client();
         try{
-        $response = $client->request('GET', 'https://api.binance.com/sapi/v1/giftcard/verify', [
+        $response = $client->request('GET', 'https://api.binance.me/sapi/v1/giftcard/verify', [
             'query' => [
                 'referenceNo' => $request->referenceNo,
                 'timestamp' =>$time,
@@ -65,20 +66,22 @@ class BinanceController extends Controller
             return response()->json([
                 'code'=>501,
                 'status' => false,
-                'message' => 'Request Timeout!',
+                'message' => 'Request Timeout!',$e->getMessage(),
                 'notes'=>'Silahkan Refresh Browser',
+
             ],501);
         }
     }
 
     public function redeemcode(Request $request)
     {
+        $data = $request->all();
+        $data = json_decode(json_encode($data));
         $time = Carbon::now()->timestamp.'000';
-        
         $secret = $this->BS;
         $signature = hash_hmac('sha256','code='.$request->code.'&timestamp='.$time, $secret);
             $client = new Client();
-            $response = $client->request('POST', 'https://api.binance.com/sapi/v1/giftcard/redeemCode', [
+            $response = $client->request('POST', 'https://api.binance.me/sapi/v1/giftcard/redeemCode', [
                 'query' => [
                     'code' => $request->code,
                     'timestamp' =>$time,

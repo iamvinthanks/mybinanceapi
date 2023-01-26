@@ -28,9 +28,10 @@ Route::post('/register', [App\Http\Controllers\API\AuthController::class, 'regis
 //API route for login user
 Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login']);
 Route::post('webhook', 'App\Http\Controllers\Api\PaymentController@getblock');
+Route::get('/verifcode', 'App\Http\Controllers\Api\BinanceController@verifcode');
+Route::post('/redeemcode', 'App\Http\Controllers\Api\BinanceController@redeemcode');
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/profile','App\Http\Controllers\Api\AuthController@profile');
-    Route::get('/verifcode', 'App\Http\Controllers\Api\BinanceController@verifcode');
     Route::get('/ipcheck','App\Http\Controllers\Api\BinanceController@ipcheck');
     // API route for logout user
     Route::post('/logout', [App\Http\Controllers\API\AuthController::class, 'logout']);
