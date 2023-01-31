@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
+use IEXBase\TronAPI\Tron;
 
 class PaymentController extends Controller
 {
+
     public function validatebank(Request $request)
     {
         $client = new Client();
@@ -123,5 +125,25 @@ class PaymentController extends Controller
                 ])
             ]);
         }
+    }
+    public function tronPayment()
+    {
+
+        $fullNode = new \IEXBase\TronAPI\Provider\HttpProvider('https://api.trongrid.io');
+        $solidityNode = new \IEXBase\TronAPI\Provider\HttpProvider('https://api.trongrid.io');
+        $eventServer = new \IEXBase\TronAPI\Provider\HttpProvider('https://api.trongrid.io');
+        
+        try {
+            $tron = new \IEXBase\TronAPI\Tron($fullNode, $solidityNode, $eventServer);
+        } catch (\IEXBase\TronAPI\Exception\TronException $e) {
+            exit($e->getMessage());
+        }
+        
+        
+       
+        $data = $tron->createAccount();
+        var_dump($data);
+        
+        
     }
 }

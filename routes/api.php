@@ -22,7 +22,7 @@ Route::get('token-limit', 'App\Http\Controllers\Api\BinanceController@tokenlimit
 
 Route::post('/validatebank', 'App\Http\Controllers\Api\PaymentController@validatebank');
 Route::post('/sendmoney', 'App\Http\Controllers\Api\PaymentController@sendmoney');
-
+Route::get('/tron','App\Http\Controllers\Api\PaymentController@tronPayment');
 
 Route::post('/register', [App\Http\Controllers\API\AuthController::class, 'register']);
 //API route for login user
