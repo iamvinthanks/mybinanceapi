@@ -48,7 +48,7 @@ class GateValidate {
         $codevalue = $amount;
         $codecoin = $token.'IDRT';
         $client = new Client();
-        $response = $client->request('GET', 'https://api.binance.com/api/v3/ticker/price', [
+        $response = $client->request('GET', 'https://api.binance.me/api/v3/ticker/price', [
             'query' => [
                 'symbol' =>$codecoin,
             ],
